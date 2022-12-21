@@ -74,5 +74,28 @@ namespace DisplayingDirectories.Services
                 _context.SaveChanges();
             }
         }
+
+        public void ExportFolders(string saveLocation)
+        {
+            List<Folder> foldersModel = _context.Folders.ToList();
+            List<string> folders = foldersModel.Select(x => x.Name).ToList();
+            foreach (Folder folder in foldersModel)
+            {
+                var route = saveLocation + '\\' + GetRoute(folder);
+                Directory.CreateDirectory(route);
+            }
+        }
+
+        private string GetRoute(Folder folder)
+        {
+            string route = folder.Name;
+            while(folder.ParentId != null)
+            {
+                folder = _context.Folders.FirstOrDefault(x => x.Id == folder.ParentId);
+                route =  folder.Name + '\\' + route;
+            }
+            Console.WriteLine(route);
+            return route;
+        }
     }
 }
