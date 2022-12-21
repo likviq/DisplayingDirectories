@@ -35,7 +35,19 @@ namespace DisplayingDirectories.Controllers
         [Route("/Directory/Import")]
         public void Import(string route)
         {
-            //_folderService.ImportFolders(route);
+            _folderService.ImportFolders(route);
+        }
+
+        [Route("/Directory/Export")]
+        public IActionResult Export()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("/Directory/Export")]
+        public void Export(string route)
+        {
             _folderService.ExportFolders(route);
         }
     }

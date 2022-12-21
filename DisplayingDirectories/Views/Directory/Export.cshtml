@@ -1,8 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Import";
+    ViewData["Title"] = "Export";
 }
 
-<h3>Import</h3>
+<h3>Export</h3>
 <div>@Html.TextBox("route")</div>
 <button id="update-button" onclick="relocate()">update</button>
 
@@ -10,7 +10,7 @@
     function relocate(){
         $.ajax({
             type:"POST",
-            url: "@Url.Action("Import")",
+            url: "@Url.Action("Export")",
             data: {route: $('#route').val()}
         });
     }
