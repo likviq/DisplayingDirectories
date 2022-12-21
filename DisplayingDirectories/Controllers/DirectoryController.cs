@@ -24,5 +24,18 @@ namespace DisplayingDirectories.Controllers
             var folders = await _folderService.GetFolders(filesName);
             return View(folders);
         }
+
+        [Route("/Directory/Import")]
+        public IActionResult Import()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("/Directory/Import")]
+        public void Import(string route)
+        {
+            _folderService.ImportFolders(route);
+        }
     }
 }

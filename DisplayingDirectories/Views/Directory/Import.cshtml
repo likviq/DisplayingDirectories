@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Import";
+}
+
+<div>@Html.TextBox("route")</div>
+<button id="update-button" onclick="relocate()">update</button>
+
+<script>
+    function relocate(){
+        console.log("adsa");
+        $.ajax({
+            type:"POST",
+            url: "@Url.Action("Import")",
+            data: {route: $('#route').val()}
+        });
+    }
+</script>
