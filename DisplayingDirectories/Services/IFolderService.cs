@@ -6,5 +6,6 @@ namespace DisplayingDirectories.Services
     {
         Task<List<Folder>> GetFolders(string fullRoute);
         string GetFolderName(string fullRoute);
+        void ImportFolders(string fileLocation);
     }
 }

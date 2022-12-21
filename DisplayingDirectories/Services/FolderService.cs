@@ -50,5 +50,29 @@ namespace DisplayingDirectories.Services
             }
             return folderName;
         }
+
+        public void ImportFolders(string fileLocation)
+        {
+            string[] folders = Directory.GetDirectories(fileLocation, "*", SearchOption.AllDirectories);
+            var firstFile = folders[0].Split(@"\");
+            var parentDirectoryName = firstFile[firstFile.Length - 2];
+
+            FolderType directoryType = FolderType.Directory;
+            Folder parentFolder = new Folder { Name = parentDirectoryName, FolderType = directoryType, ParentId = null };
+            _context.Folders.Add(parentFolder);
+            _context.SaveChanges();
+
+            foreach(var folder in folders)
+            {
+                var route = folder.Split(@"\");
+                var parentName = route[route.Length - 2];
+                parentFolder = _context.Folders.FirstOrDefault(x => x.Name == parentName);
+
+                var folderModel = new Folder { Name = route[route.Length - 1], FolderType = directoryType, ParentId = null };
+
+                _context.Folders.Add(folderModel);
+                _context.SaveChanges();
+            }
+        }
     }
 }
