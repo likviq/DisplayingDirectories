@@ -1,0 +1,28 @@
+﻿@model IEnumerable<DisplayingDirectories.Models.Folder>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>"Folder" - @ViewBag.Filename</h1>
+
+
+@if(Model != null){
+    @foreach (var item in Model) {
+            <ul>
+                <li>
+                    @if (@Url.RouteUrl(ViewContext.RouteData.Values) == "/"){
+                        <a href="/@item.Name">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    }
+                    else{
+                        <a href="@Url.RouteUrl(ViewContext.RouteData.Values)/@item.Name">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    }
+                </li>
+            </ul>
+    }
+}
+
