@@ -1,9 +1,8 @@
-﻿@model IEnumerable<DisplayingDirectories.Models.Folder>
+﻿@model IEnumerable<DisplayingDirectories.Models.FolderDto>
 
 @{
     ViewData["Title"] = "Index";
 }
-
 <h1>"Folder" - @ViewBag.Filename</h1>
 
 
@@ -25,10 +24,3 @@
             </ul>
     }
 }
-
-<hr>
-
-<ul>
-    <li><a href="/directory/import">import directories</a></li>
-    <li><a href="/directory/export">export database</a></li>
-</ul>

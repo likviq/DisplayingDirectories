@@ -2,17 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DisplayingDirectories.Services;
+using System.Web;
 
 namespace DisplayingDirectories.Controllers
 {
     public class DirectoryController : Controller
     {
-        private readonly DirectoryDBContext _context;
         private readonly IFolderService _folderService;
 
         public DirectoryController(DirectoryDBContext context, IFolderService folderService)
         {
-            _context = context;
             _folderService = folderService;
         }
 
@@ -21,6 +20,7 @@ namespace DisplayingDirectories.Controllers
         {
             var folderName = _folderService.GetFolderName(filesName);
             ViewBag.Filename = folderName;
+
             var folders = await _folderService.GetFolders(filesName);
             return View(folders);
         }
