@@ -11,12 +11,15 @@ namespace DisplayingDirectories.Services
             _context = context;
         }
 
-        public async Task<List<Folder>> GetFolders(string fullRoute)
+        public async Task<List<FolderDto>> GetFolders(string fullRoute)
         {
             var folders = _context.Folders.Where(x => x.ParentId == null);
+            List<FolderDto> folderDto = new List<FolderDto>();
+            
             if (fullRoute == null)
             {
-                return await folders.ToListAsync();
+                folderDto = await ConvertToDto(folders);
+                return folderDto;
             }
 
             string[] filesNameArray = fullRoute.Split('/');
@@ -31,7 +34,18 @@ namespace DisplayingDirectories.Services
                 folders = _context.Folders.Where(x => x.ParentId == parentId);
             }
 
-            return await folders.ToListAsync();
+            folderDto = await ConvertToDto(folders);
+            return folderDto;
+        }
+
+        private async Task<List<FolderDto>> ConvertToDto(IQueryable<Folder> folders)
+        {
+            var folderDto = await folders.Select(x =>
+                                   new FolderDto()
+                                   {
+                                       Name = x.Name
+                                   }).ToListAsync();
+            return folderDto;
         }
 
         public string GetFolderName(string fullRoute)
@@ -48,6 +62,7 @@ namespace DisplayingDirectories.Services
             {
                 folderName = filesNameArray[filesNameArray.Length - 2];
             }
+            
             return folderName;
         }
 
@@ -59,6 +74,7 @@ namespace DisplayingDirectories.Services
 
             FolderType directoryType = FolderType.Directory;
             Folder parentFolder = new Folder { Name = parentDirectoryName, FolderType = directoryType, ParentId = null };
+            
             _context.Folders.Add(parentFolder);
             _context.SaveChanges();
 
@@ -68,7 +84,7 @@ namespace DisplayingDirectories.Services
                 var parentName = route[route.Length - 2];
                 parentFolder = _context.Folders.FirstOrDefault(x => x.Name == parentName);
 
-                var folderModel = new Folder { Name = route[route.Length - 1], FolderType = directoryType, ParentId = null };
+                var folderModel = new Folder { Name = route[route.Length - 1], FolderType = directoryType, ParentId = parentFolder.Id };
 
                 _context.Folders.Add(folderModel);
                 _context.SaveChanges();
@@ -78,7 +94,7 @@ namespace DisplayingDirectories.Services
         public void ExportFolders(string saveLocation)
         {
             List<Folder> foldersModel = _context.Folders.ToList();
-            List<string> folders = foldersModel.Select(x => x.Name).ToList();
+            
             foreach (Folder folder in foldersModel)
             {
                 var route = saveLocation + '\\' + GetRoute(folder);
@@ -89,12 +105,13 @@ namespace DisplayingDirectories.Services
         private string GetRoute(Folder folder)
         {
             string route = folder.Name;
+            
             while(folder.ParentId != null)
             {
                 folder = _context.Folders.FirstOrDefault(x => x.Id == folder.ParentId);
                 route =  folder.Name + '\\' + route;
             }
-            Console.WriteLine(route);
+
             return route;
         }
     }
